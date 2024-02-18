@@ -1,32 +1,24 @@
 import React, { useState } from 'react';
 
 import Page1 from './components/Page1';
+import asyncComponent from './components/AsyncComponent';
 import './App.css';
 
 function App() {
   const [route, setRoute] = useState("page1");
-  const [Component, setComponent] = useState(() => null);
 
   const onRouteChange = (route) => {
-    if (route === "page1") {
-      setRoute(route);
-    } else if (route === "page2") {
-      import("./components/Page2").then((Page2) => {
-        setRoute(route);
-        setComponent(() => Page2.default);
-      });
-    } else if (route === "page3") {
-      import("./components/Page3").then((Page3) => {
-        setRoute(route);
-        setComponent(() => Page3.default);
-      });
-    }
+    setRoute(route);
   };
 
   if (route === "page1") {
     return <Page1 onRouteChange={onRouteChange} />;
-  } else {
-    return <Component onRouteChange={onRouteChange} />;
+  } else if (route === "page2") {
+    const AsyncPage2 = asyncComponent(() => import("./components/Page2"));
+    return <AsyncPage2 onRouteChange={onRouteChange} />;
+  } else if (route === "page3") {
+    const AsyncPage3 = asyncComponent(() => import("./components/Page3"));
+    return <AsyncPage3 onRouteChange={onRouteChange} />;
   }
 }
 
