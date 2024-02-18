@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 
 import Page1 from './components/Page1';
-import asyncComponent from './components/AsyncComponent';
 import './App.css';
+
+const Page2Lazy = React.lazy(() => import("./components/Page2"));
+const Page3Lazy = React.lazy(() => import("./components/Page3"));
 
 function App() {
   const [route, setRoute] = useState("page1");
@@ -14,11 +16,17 @@ function App() {
   if (route === "page1") {
     return <Page1 onRouteChange={onRouteChange} />;
   } else if (route === "page2") {
-    const AsyncPage2 = asyncComponent(() => import("./components/Page2"));
-    return <AsyncPage2 onRouteChange={onRouteChange} />;
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Page2Lazy onRouteChange={onRouteChange} />
+      </Suspense>
+    );
   } else if (route === "page3") {
-    const AsyncPage3 = asyncComponent(() => import("./components/Page3"));
-    return <AsyncPage3 onRouteChange={onRouteChange} />;
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Page3Lazy onRouteChange={onRouteChange} />
+      </Suspense>
+    );
   }
 }
 
