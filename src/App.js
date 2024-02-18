@@ -5,7 +5,7 @@ import './App.css';
 
 function App() {
   const [route, setRoute] = useState("page1");
-  const [Component, setComponent] = useState("");
+  const [Component, setComponent] = useState(() => null);
 
   const onRouteChange = (route) => {
     if (route === "page1") {
@@ -13,12 +13,12 @@ function App() {
     } else if (route === "page2") {
       import("./components/Page2").then((Page2) => {
         setRoute(route);
-        setComponent(Page2.default);
+        setComponent(() => Page2.default);
       });
     } else if (route === "page3") {
       import("./components/Page3").then((Page3) => {
         setRoute(route);
-        setComponent(Page3.default);
+        setComponent(() => Page3.default);
       });
     }
   };
@@ -26,7 +26,7 @@ function App() {
   if (route === "page1") {
     return <Page1 onRouteChange={onRouteChange} />;
   } else {
-    return Component;
+    return <Component onRouteChange={onRouteChange} />;
   }
 }
 
